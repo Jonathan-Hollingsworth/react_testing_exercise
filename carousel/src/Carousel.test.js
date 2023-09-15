@@ -11,12 +11,14 @@ it("matches snapshot", function() {
   expect(asFragment()).toMatchSnapshot();
 });
 
+it("matches snapshot", function() {
+  const {asFragment} = render(<Carousel photos={[TEST_IMAGES[0]]} title="images for testing"/>);
+  expect(asFragment()).toMatchSnapshot();
+});
+
 it("works when you click on the right arrow", function() {
   const { container } = render(
-    <Carousel
-      photos={TEST_IMAGES}
-      title="images for testing"
-    />
+    <Carousel photos={TEST_IMAGES} title="images for testing" />
   );
   // expect the first image to show, but not the second
   expect(
@@ -68,4 +70,33 @@ it("works when you click on the left arrow", function() {
   expect(
     container.querySelector('img[alt="testing image 1"]')
   ).toBeInTheDocument();
+});
+
+it("hides appropriate arrow when at either end", function() {
+  const { container } = render(
+    <Carousel
+      photos={TEST_IMAGES}
+      title="images for testing"
+    />
+  );
+  // expect the first image to show, but not the second
+  expect(
+    container.querySelector('img[alt="testing image 1"]')
+  ).toBeInTheDocument();
+  expect(
+    container.querySelector('.bi-arrow-left-circle')
+  ).not.toBeInTheDocument();
+
+  // move forward in the carousel
+  const rightArrow = container.querySelector(".bi-arrow-right-circle");
+  fireEvent.click(rightArrow);
+  fireEvent.click(rightArrow);
+
+  // expect the second image to show, but not the first
+  expect(
+    container.querySelector('img[alt="testing image 3"]')
+  ).toBeInTheDocument();
+  expect(
+    container.querySelector('.bi-arrow-right-circle')
+  ).not.toBeInTheDocument();
 });
